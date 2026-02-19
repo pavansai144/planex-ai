@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Planex AI</title>
+    <style>
+        body { font-family: Arial; background-color: #0d0d1a; color: white; text-align: center; }
+        button { padding: 10px 20px; background: #1f4068; color: white; border: none; cursor: pointer; }
+        img { margin: 10px; border: 2px solid white; }
+
+        /* Chatbot */
+        #chatbot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: #1f4068;
+            border-radius: 10px;
+            display: none;
+            padding: 10px;
+        }
+
+        #chatbot input {
+            width: 80%;
+            padding: 5px;
+        }
+
+        #chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #e43f5a;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>PLANEX AI</h1>
+<h3>AI-Assisted Analysis of Lunar Surface Features</h3>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="image" required>
+    <br><br>
+    <button type="submit">Analyze Image</button>
+</form>
+
+{% if original_image %}
+    <h3>Original Image</h3>
+    <img src="{{ original_image }}" width="300">
+{% endif %}
+
+{% if edge_image %}
+    <h3>Edge Detection</h3>
+    <img src="{{ edge_image }}" width="300">
+{% endif %}
+
+{% if crater_image %}
+    <h3>Crater Detection</h3>
+    <img src="{{ crater_image }}" width="300">
+{% endif %}
+
+<!-- Chat Icon -->
+<button id="chat-icon" onclick="toggleChat()">💬</button>
+
+<!-- Chatbot Box -->
+<div id="chatbot">
+    <div id="chat-messages" style="height:150px; overflow-y:auto;"></div>
+    <input type="text" id="chat-input" placeholder="Ask something...">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+function toggleChat() {
+    let chat = document.getElementById("chatbot");
+    chat.style.display = chat.style.display === "none" ? "block" : "none";
+}
+
+function sendMessage() {
+    let input = document.getElementById("chat-input");
+    let message = input.value;
+    input.value = "";
+
+    fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: message })
+    })
+    .then(response => response.json())
+    .then(data => {
+        let chatBox = document.getElementById("chat-messages");
+        chatBox.innerHTML += "<p><b>You:</b> " + message + "</p>";
+        chatBox.innerHTML += "<p><b>Bot:</b> " + data.reply + "</p>";
+    });
+}
+</script>
+
+</body>
+</html>
