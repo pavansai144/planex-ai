@@ -1,301 +1,221 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Planex AI</title>
+    <title>PLANEX AI | Ultimate Mission Control</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
-        html { scroll-behavior: smooth; }
-
         body {
             margin: 0;
+            background: #02040a;
+            color: #e6edf3;
             font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at top, #111122, #050510);
-            color: white;
             overflow-x: hidden;
         }
 
-        /* ===== STAR BACKGROUND ===== */
-        body::before {
-            content: "";
+        h1,h2,h3 { font-family: 'Orbitron', sans-serif; }
+
+        /* STAR CANVAS */
+        #starfield {
             position: fixed;
-            width: 200%;
-            height: 200%;
-            background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
-            animation: stars 60s linear infinite;
-            opacity: 0.3;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
+            background: #02040a;
         }
 
-        @keyframes stars {
-            from { transform: translateY(0); }
-            to { transform: translateY(-1000px); }
-        }
-
-        /* ===== NAVBAR ===== */
+        /* NAVBAR */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 60px;
-            backdrop-filter: blur(10px);
-            background: rgba(10,10,20,0.6);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            background: rgba(5,10,20,0.85);
+            border-bottom: 1px solid #1f2937;
         }
 
         .navbar ul {
             list-style: none;
             display: flex;
-            gap: 30px;
+            gap: 25px;
         }
 
         .navbar a {
             text-decoration: none;
-            color: white;
-            font-weight: 500;
-            transition: 0.3s;
+            color: #9ca3af;
+            font-size: 14px;
         }
 
-        .navbar a:hover {
-            color: #ff4d6d;
-        }
+        .navbar a:hover { color: #f43f5e; }
 
-        /* ===== HERO ===== */
+        /* HERO */
         .hero {
-            text-align: center;
-            padding: 150px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 70px 40px;
+            flex-wrap: wrap;
         }
 
-        .hero h1 {
-            font-size: 65px;
-            font-weight: 700;
-            background: linear-gradient(90deg, #ffffff, #ff4d6d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        #moon-container { width: 320px; height: 320px; }
 
-        .hero p {
-            font-size: 22px;
-            color: #BBBBBB;
-            margin-top: 20px;
-        }
+        .hero-text h1 { font-size: 42px; }
+        .hero-text p { color: #9ca3af; }
 
-        /* ===== SECTION ===== */
-        .section {
-            padding: 100px 60px;
-            text-align: center;
-        }
-
-        /* ===== GLASS CARD ===== */
-        .glass-card {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 35px;
-            box-shadow: 0 0 40px rgba(255, 77, 109, 0.15);
-            transition: 0.4s ease;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 0 60px rgba(255, 77, 109, 0.35);
-        }
-
-        .flex-container {
+        /* TELEMETRY */
+        .telemetry {
             display: flex;
             justify-content: center;
             gap: 40px;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .telemetry span {
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        /* SECTION */
+        .section {
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
             flex-wrap: wrap;
-            margin-top: 60px;
+            margin-top: 30px;
+        }
+
+        .panel-card {
+            background: rgba(15,23,42,0.9);
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #1f2937;
+            width: 260px;
         }
 
         button {
-            padding: 14px 28px;
-            background: linear-gradient(45deg, #ff4d6d, #ff758f);
+            padding: 10px 20px;
+            background: #f43f5e;
             border: none;
-            border-radius: 10px;
             color: white;
-            font-weight: 600;
+            border-radius: 5px;
             cursor: pointer;
+        }
+
+        .result-card img {
+            width: 220px;
+            border-radius: 8px;
+        }
+
+        .gallery img {
+            width: 250px;
+            border-radius: 8px;
             transition: 0.3s;
-            box-shadow: 0 0 20px rgba(255, 77, 109, 0.4);
         }
 
-        button:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 30px rgba(255, 77, 109, 0.8);
-        }
-
-        input[type="file"] {
-            margin-top: 20px;
-        }
-
-        .card img {
-            width: 100%;
-            border-radius: 15px;
-            margin-top: 20px;
-        }
+        .gallery img:hover { transform: scale(1.05); }
 
         footer {
-            padding: 50px;
+            padding: 40px;
             text-align: center;
-            background: #050510;
-            color: #777;
+            background: rgba(5,10,20,0.9);
+            color: #6b7280;
         }
 
-        /* ===== CHATBOT ===== */
+        /* CHATBOT */
         #chat-icon {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(45deg, #ff4d6d, #ff758f);
-            color: white;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            font-size: 26px;
+            background: #f43f5e;
             border: none;
+            color: white;
+            font-size: 20px;
             cursor: pointer;
-            box-shadow: 0 0 25px rgba(255, 77, 109, 0.6);
         }
 
         #chatbot {
             position: fixed;
-            bottom: 110px;
-            right: 30px;
-            width: 340px;
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 20px;
+            bottom: 95px;
+            right: 25px;
+            width: 300px;
+            background: rgba(15,23,42,0.95);
+            border-radius: 10px;
+            padding: 15px;
             display: none;
         }
 
-        #chatbot input {
-            width: 70%;
-            padding: 8px;
-            border-radius: 8px;
-            border: none;
+        @media(max-width:768px){
+            .hero { flex-direction: column; }
         }
-
-        /* ===== MOBILE RESPONSIVE ===== */
-
-        @media (max-width: 1024px) {
-            .section { padding: 80px 30px; }
-            .hero h1 { font-size: 50px; }
-        }
-
-        @media (max-width: 768px) {
-
-            .navbar {
-                flex-direction: column;
-                padding: 20px;
-            }
-
-            .navbar ul {
-                flex-direction: column;
-                gap: 15px;
-                margin-top: 15px;
-            }
-
-            .hero {
-                padding: 100px 20px;
-            }
-
-            .hero h1 { font-size: 38px; }
-            .hero p { font-size: 16px; }
-
-            .section { padding: 60px 20px; }
-
-            .flex-container {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .glass-card {
-                width: 90%;
-            }
-
-            button { width: 90%; }
-
-            input[type="file"] { width: 90%; }
-
-            #chatbot {
-                width: 90%;
-                right: 5%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero h1 { font-size: 28px; }
-            .hero p { font-size: 14px; }
-            footer { padding: 30px 15px; font-size: 12px; }
-        }
-
     </style>
 </head>
 
 <body>
 
+<canvas id="starfield"></canvas>
+
 <nav class="navbar">
     <div><strong>PLANEX AI</strong></div>
     <ul>
+        <li><a href="#analyze">Analyze</a></li>
         <li><a href="#features">Features</a></li>
-        <li><a href="#upload">Analyze</a></li>
+        <li><a href="#gallery">Gallery</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="#future">Future</a></li>
     </ul>
 </nav>
 
 <section class="hero">
-    <h1>PLANEX AI</h1>
-    <p>AI-Assisted Analysis of Lunar Surface Features</p>
-</section>
-
-<section id="features" class="section">
-    <h2>Key Features</h2>
-    <div class="flex-container">
-        <div class="glass-card">
-            <h3>Edge Detection</h3>
-            <p>Identifies surface boundaries using Canny algorithm.</p>
-        </div>
-        <div class="glass-card">
-            <h3>Crater Detection</h3>
-            <p>Detects crater-like structures using Hough Transform.</p>
-        </div>
-        <div class="glass-card">
-            <h3>AI Chatbot</h3>
-            <p>Interactive assistant explaining workflow and features.</p>
-        </div>
+    <div id="moon-container"></div>
+    <div class="hero-text">
+        <h1>ULTIMATE DEEP SPACE CONTROL</h1>
+        <p>AI-Driven Lunar Surface Analysis Platform</p>
     </div>
 </section>
 
-<section id="upload" class="section">
-    <h2>Analyze Lunar Image</h2>
+<div class="telemetry">
+    ALTITUDE: <span id="altitude">0</span> km |
+    SPEED: <span id="speed">0</span> km/s |
+    SIGNAL: <span>STABLE</span>
+</div>
+
+<section id="analyze" class="section">
+    <h2>Lunar Image Analysis</h2>
     <form method="POST" enctype="multipart/form-data">
         <input type="file" name="image" required><br><br>
-        <button type="submit">Analyze Image</button>
+        <button type="submit">Run Analysis</button>
     </form>
 </section>
 
 {% if original_image %}
 <section class="section">
-    <h2>Results</h2>
-    <div class="flex-container">
-        <div class="glass-card card">
+    <h2>Analysis Output</h2>
+    <div class="flex">
+        <div class="panel-card result-card">
             <h4>Original</h4>
             <img src="{{ original_image }}">
         </div>
-        <div class="glass-card card">
+        <div class="panel-card result-card">
             <h4>Edge Detection</h4>
             <img src="{{ edge_image }}">
         </div>
-        <div class="glass-card card">
+        <div class="panel-card result-card">
             <h4>Crater Detection</h4>
             <img src="{{ crater_image }}">
         </div>
@@ -303,66 +223,183 @@
 </section>
 {% endif %}
 
-<section id="about" class="section">
-    <h2>About Planex AI</h2>
-    <p style="max-width:700px;margin:auto;color:#BBBBBB;">
-        Planex AI is a cloud-deployed lunar surface analysis platform designed 
-        to automate crater detection using computer vision techniques. 
-        It demonstrates modular architecture and scalability toward deep learning integration.
-    </p>
-</section>
-
-<section id="future" class="section">
-    <h2>Future Work</h2>
-    <div class="flex-container">
-        <div class="glass-card">
-            <h4>CNN-Based Detection</h4>
-            <p>Deep learning models for higher detection accuracy.</p>
-        </div>
-        <div class="glass-card">
-            <h4>Multi-Planet Support</h4>
-            <p>Expand detection to Mars and other celestial bodies.</p>
-        </div>
-        <div class="glass-card">
-            <h4>Real-Time Integration</h4>
-            <p>Integration with satellite datasets.</p>
-        </div>
+<section id="features" class="section">
+    <h2>Core Capabilities</h2>
+    <div class="flex">
+        <div class="panel-card"><h3>Edge Detection</h3></div>
+        <div class="panel-card"><h3>Crater Recognition</h3></div>
+        <div class="panel-card"><h3>Cloud Hosted</h3></div>
     </div>
 </section>
 
+<section id="gallery" class="section gallery">
+    <h2>Space Exploration Gallery</h2>
+    <div class="flex">
+        <img src="https://images-assets.nasa.gov/image/PIA12235/PIA12235~orig.jpg">
+        <img src="https://images-assets.nasa.gov/image/PIA01322/PIA01322~orig.jpg">
+        <img src="https://images-assets.nasa.gov/image/PIA00271/PIA00271~orig.jpg">
+    </div>
+</section>
+
+<section id="about" class="section">
+    <h2>About Planex AI</h2>
+    <p style="max-width:700px;margin:auto;color:#9ca3af;">
+        Planex AI is a mission-control inspired lunar surface analysis system designed to detect craters using computer vision.
+    </p>
+</section>
+
 <footer>
-    © 2026 Planex AI | Built by Pavan Sai A
+    © 2026 PLANEX AI | Built by Pavan Sai A
 </footer>
 
 <button id="chat-icon" onclick="toggleChat()">💬</button>
-
 <div id="chatbot">
-    <div id="chat-messages" style="height:150px; overflow-y:auto;"></div>
-    <input type="text" id="chat-input" placeholder="Ask something...">
+    <div id="chat-messages" style="height:120px; overflow-y:auto;"></div>
+    <input type="text" id="chat-input">
     <button onclick="sendMessage()">Send</button>
 </div>
 
 <script>
-function toggleChat() {
-    let chat = document.getElementById("chatbot");
-    chat.style.display = chat.style.display === "none" ? "block" : "none";
+/* STARFIELD ULTIMATE */
+const canvas = document.getElementById("starfield");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+let shootingStars = [];
+
+for (let i = 0; i < 300; i++) {
+    stars.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        size: Math.random()*2,
+        speed: Math.random()*1.2,
+        opacity: Math.random(),
+        depth: Math.random()*3
+    });
 }
 
-function sendMessage() {
-    let input = document.getElementById("chat-input");
-    let message = input.value;
-    input.value = "";
+function createShootingStar(){
+    shootingStars.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height/2,
+        length: Math.random()*80+50,
+        speed: Math.random()*8+6,
+        life:0
+    });
+}
+setInterval(createShootingStar,4000);
 
-    fetch("/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: message })
-    })
-    .then(response => response.json())
-    .then(data => {
-        let chatBox = document.getElementById("chat-messages");
-        chatBox.innerHTML += "<p><b>You:</b> " + message + "</p>";
-        chatBox.innerHTML += "<p><b>Bot:</b> " + data.reply + "</p>";
+function animateStars(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    stars.forEach(star=>{
+        star.opacity+=(Math.random()-0.5)*0.05;
+        star.opacity=Math.max(0,Math.min(1,star.opacity));
+
+        ctx.beginPath();
+        ctx.arc(star.x,star.y,star.size*(star.depth/2),0,Math.PI*2);
+        ctx.fillStyle="rgba(255,255,255,"+star.opacity+")";
+        ctx.fill();
+
+        star.y+=star.speed*(star.depth/3);
+        if(star.y>canvas.height){
+            star.y=0;
+            star.x=Math.random()*canvas.width;
+        }
+    });
+
+    shootingStars.forEach((s,i)=>{
+        ctx.beginPath();
+        ctx.moveTo(s.x,s.y);
+        ctx.lineTo(s.x-s.length,s.y+s.length);
+        ctx.strokeStyle="white";
+        ctx.lineWidth=2;
+        ctx.stroke();
+        s.x+=s.speed;
+        s.y+=s.speed;
+        s.life++;
+        if(s.life>20) shootingStars.splice(i,1);
+    });
+
+    requestAnimationFrame(animateStars);
+}
+animateStars();
+
+/* TELEMETRY */
+let alt=0,spd=0;
+setInterval(()=>{
+    alt+=Math.floor(Math.random()*5);
+    spd+=Math.floor(Math.random()*2);
+    document.getElementById("altitude").innerText=alt;
+    document.getElementById("speed").innerText=spd;
+},1000);
+
+/* 3D MOON + SATELLITE + RADAR */
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(75,1,0.1,1000);
+const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
+renderer.setSize(320,320);
+document.getElementById("moon-container").appendChild(renderer.domElement);
+
+const textureLoader=new THREE.TextureLoader();
+const moonTexture=textureLoader.load("https://threejsfundamentals.org/threejs/resources/images/moon.jpg");
+
+const geometry=new THREE.SphereGeometry(2,64,64);
+const material=new THREE.MeshStandardMaterial({map:moonTexture});
+const moon=new THREE.Mesh(geometry,material);
+scene.add(moon);
+
+const light=new THREE.PointLight(0xffffff,1.5);
+light.position.set(5,5,5);
+scene.add(light);
+
+const satellite=new THREE.Mesh(
+    new THREE.BoxGeometry(0.3,0.2,0.2),
+    new THREE.MeshStandardMaterial({color:0xffffff})
+);
+scene.add(satellite);
+
+const radar=new THREE.Mesh(
+    new THREE.RingGeometry(2.3,2.5,64),
+    new THREE.MeshBasicMaterial({color:0x00ff99,transparent:true,opacity:0.4,side:THREE.DoubleSide})
+);
+radar.rotation.x=Math.PI/2;
+scene.add(radar);
+
+camera.position.z=5;
+let orbitAngle=0;
+
+function animateMoon(){
+    requestAnimationFrame(animateMoon);
+    moon.rotation.y+=0.003;
+
+    orbitAngle+=0.02;
+    satellite.position.x=Math.cos(orbitAngle)*3;
+    satellite.position.z=Math.sin(orbitAngle)*3;
+
+    radar.rotation.z+=0.02;
+
+    renderer.render(scene,camera);
+}
+animateMoon();
+
+/* CHAT */
+function toggleChat(){
+    let c=document.getElementById("chatbot");
+    c.style.display=c.style.display==="none"?"block":"none";
+}
+function sendMessage(){
+    let input=document.getElementById("chat-input");
+    let message=input.value;
+    input.value="";
+    fetch("/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:message})})
+    .then(res=>res.json())
+    .then(data=>{
+        let box=document.getElementById("chat-messages");
+        box.innerHTML+="<p><b>You:</b> "+message+"</p>";
+        box.innerHTML+="<p><b>Bot:</b> "+data.reply+"</p>";
     });
 }
 </script>
