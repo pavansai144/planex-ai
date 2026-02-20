@@ -1,242 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Planex AI</title>
+    <title>Planex AI - 3D Version</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
 
     <style>
-        html { scroll-behavior: smooth; }
-
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at top, #111122, #050510);
+            background: radial-gradient(circle at top, #0b0b1a, #000);
             color: white;
             overflow-x: hidden;
         }
 
-        /* ===== STAR BACKGROUND ===== */
-        body::before {
-            content: "";
-            position: fixed;
-            width: 200%;
-            height: 200%;
-            background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
-            animation: stars 60s linear infinite;
-            opacity: 0.3;
-            z-index: -1;
-        }
-
-        @keyframes stars {
-            from { transform: translateY(0); }
-            to { transform: translateY(-1000px); }
-        }
-
-        /* ===== NAVBAR ===== */
         .navbar {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 20px 60px;
+            padding: 20px 50px;
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(10px);
-            background: rgba(10,10,20,0.6);
-            position: sticky;
-            top: 0;
+            position: fixed;
+            width: 100%;
             z-index: 1000;
         }
 
-        .navbar ul {
-            list-style: none;
-            display: flex;
-            gap: 30px;
-        }
-
         .navbar a {
-            text-decoration: none;
             color: white;
-            font-weight: 500;
-            transition: 0.3s;
+            text-decoration: none;
+            margin-left: 25px;
         }
 
-        .navbar a:hover {
-            color: #ff4d6d;
-        }
-
-        /* ===== HERO ===== */
         .hero {
+            height: 100vh;
             text-align: center;
-            padding: 150px 20px;
+            position: relative;
         }
 
-        .hero h1 {
-            font-size: 65px;
-            font-weight: 700;
-            background: linear-gradient(90deg, #ffffff, #ff4d6d);
+        #moon-container {
+            width: 100%;
+            height: 100vh;
+        }
+
+        .hero-text {
+            position: absolute;
+            top: 30%;
+            width: 100%;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .hero-text h1 {
+            font-size: 60px;
+            background: linear-gradient(90deg,#fff,#ff4d6d);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .hero p {
-            font-size: 22px;
-            color: #BBBBBB;
-            margin-top: 20px;
-        }
-
-        /* ===== SECTION ===== */
-        .section {
-            padding: 100px 60px;
-            text-align: center;
-        }
-
-        /* ===== GLASS CARD ===== */
-        .glass-card {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 35px;
-            box-shadow: 0 0 40px rgba(255, 77, 109, 0.15);
-            transition: 0.4s ease;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 0 60px rgba(255, 77, 109, 0.35);
-        }
-
-        .flex-container {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-            margin-top: 60px;
-        }
-
-        button {
-            padding: 14px 28px;
-            background: linear-gradient(45deg, #ff4d6d, #ff758f);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 20px rgba(255, 77, 109, 0.4);
-        }
-
-        button:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 30px rgba(255, 77, 109, 0.8);
-        }
-
-        input[type="file"] {
-            margin-top: 20px;
-        }
-
-        .card img {
-            width: 100%;
-            border-radius: 15px;
-            margin-top: 20px;
+        .hero-text p {
+            font-size: 20px;
+            color: #ccc;
         }
 
         footer {
-            padding: 50px;
             text-align: center;
-            background: #050510;
-            color: #777;
+            padding: 40px;
+            background: #000;
         }
-
-        /* ===== CHATBOT ===== */
-        #chat-icon {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(45deg, #ff4d6d, #ff758f);
-            color: white;
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            font-size: 26px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 0 25px rgba(255, 77, 109, 0.6);
-        }
-
-        #chatbot {
-            position: fixed;
-            bottom: 110px;
-            right: 30px;
-            width: 340px;
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 20px;
-            display: none;
-        }
-
-        #chatbot input {
-            width: 70%;
-            padding: 8px;
-            border-radius: 8px;
-            border: none;
-        }
-
-        /* ===== MOBILE RESPONSIVE ===== */
-
-        @media (max-width: 1024px) {
-            .section { padding: 80px 30px; }
-            .hero h1 { font-size: 50px; }
-        }
-
-        @media (max-width: 768px) {
-
-            .navbar {
-                flex-direction: column;
-                padding: 20px;
-            }
-
-            .navbar ul {
-                flex-direction: column;
-                gap: 15px;
-                margin-top: 15px;
-            }
-
-            .hero {
-                padding: 100px 20px;
-            }
-
-            .hero h1 { font-size: 38px; }
-            .hero p { font-size: 16px; }
-
-            .section { padding: 60px 20px; }
-
-            .flex-container {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .glass-card {
-                width: 90%;
-            }
-
-            button { width: 90%; }
-
-            input[type="file"] { width: 90%; }
-
-            #chatbot {
-                width: 90%;
-                right: 5%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero h1 { font-size: 28px; }
-            .hero p { font-size: 14px; }
-            footer { padding: 30px 15px; font-size: 12px; }
-        }
-
     </style>
 </head>
 
@@ -244,89 +78,17 @@
 
 <nav class="navbar">
     <div><strong>PLANEX AI</strong></div>
-    <ul>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#upload">Analyze</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#future">Future</a></li>
-    </ul>
+    <div>
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+    </div>
 </nav>
 
 <section class="hero">
-    <h1>PLANEX AI</h1>
-    <p>AI-Assisted Analysis of Lunar Surface Features</p>
-</section>
-
-<section id="features" class="section">
-    <h2>Key Features</h2>
-    <div class="flex-container">
-        <div class="glass-card">
-            <h3>Edge Detection</h3>
-            <p>Identifies surface boundaries using Canny algorithm.</p>
-        </div>
-        <div class="glass-card">
-            <h3>Crater Detection</h3>
-            <p>Detects crater-like structures using Hough Transform.</p>
-        </div>
-        <div class="glass-card">
-            <h3>AI Chatbot</h3>
-            <p>Interactive assistant explaining workflow and features.</p>
-        </div>
-    </div>
-</section>
-
-<section id="upload" class="section">
-    <h2>Analyze Lunar Image</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" required><br><br>
-        <button type="submit">Analyze Image</button>
-    </form>
-</section>
-
-{% if original_image %}
-<section class="section">
-    <h2>Results</h2>
-    <div class="flex-container">
-        <div class="glass-card card">
-            <h4>Original</h4>
-            <img src="{{ original_image }}">
-        </div>
-        <div class="glass-card card">
-            <h4>Edge Detection</h4>
-            <img src="{{ edge_image }}">
-        </div>
-        <div class="glass-card card">
-            <h4>Crater Detection</h4>
-            <img src="{{ crater_image }}">
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<section id="about" class="section">
-    <h2>About Planex AI</h2>
-    <p style="max-width:700px;margin:auto;color:#BBBBBB;">
-        Planex AI is a cloud-deployed lunar surface analysis platform designed 
-        to automate crater detection using computer vision techniques. 
-        It demonstrates modular architecture and scalability toward deep learning integration.
-    </p>
-</section>
-
-<section id="future" class="section">
-    <h2>Future Work</h2>
-    <div class="flex-container">
-        <div class="glass-card">
-            <h4>CNN-Based Detection</h4>
-            <p>Deep learning models for higher detection accuracy.</p>
-        </div>
-        <div class="glass-card">
-            <h4>Multi-Planet Support</h4>
-            <p>Expand detection to Mars and other celestial bodies.</p>
-        </div>
-        <div class="glass-card">
-            <h4>Real-Time Integration</h4>
-            <p>Integration with satellite datasets.</p>
-        </div>
+    <div id="moon-container"></div>
+    <div class="hero-text">
+        <h1>PLANEX AI</h1>
+        <p>AI-Assisted Analysis of Lunar Surface Features</p>
     </div>
 </section>
 
@@ -334,37 +96,74 @@
     © 2026 Planex AI | Built by Pavan Sai A
 </footer>
 
-<button id="chat-icon" onclick="toggleChat()">💬</button>
-
-<div id="chatbot">
-    <div id="chat-messages" style="height:150px; overflow-y:auto;"></div>
-    <input type="text" id="chat-input" placeholder="Ask something...">
-    <button onclick="sendMessage()">Send</button>
-</div>
-
 <script>
-function toggleChat() {
-    let chat = document.getElementById("chatbot");
-    chat.style.display = chat.style.display === "none" ? "block" : "none";
-}
+/* THREE JS SCENE */
+const scene = new THREE.Scene();
 
-function sendMessage() {
-    let input = document.getElementById("chat-input");
-    let message = input.value;
-    input.value = "";
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
 
-    fetch("/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: message })
-    })
-    .then(response => response.json())
-    .then(data => {
-        let chatBox = document.getElementById("chat-messages");
-        chatBox.innerHTML += "<p><b>You:</b> " + message + "</p>";
-        chatBox.innerHTML += "<p><b>Bot:</b> " + data.reply + "</p>";
-    });
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById("moon-container").appendChild(renderer.domElement);
+
+/* MOON TEXTURE */
+const textureLoader = new THREE.TextureLoader();
+const moonTexture = textureLoader.load(
+    "https://threejsfundamentals.org/threejs/resources/images/moon.jpg"
+);
+
+const geometry = new THREE.SphereGeometry(2, 64, 64);
+const material = new THREE.MeshStandardMaterial({
+    map: moonTexture
+});
+
+const moon = new THREE.Mesh(geometry, material);
+scene.add(moon);
+
+/* LIGHTING */
+const light = new THREE.PointLight(0xffffff, 1.5);
+light.position.set(5, 5, 5);
+scene.add(light);
+
+const ambientLight = new THREE.AmbientLight(0x404040);
+scene.add(ambientLight);
+
+camera.position.z = 5;
+
+/* ORBIT CONTROLS */
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableZoom = false;
+
+/* AI SCANNING RING */
+const ringGeometry = new THREE.RingGeometry(2.2, 2.3, 64);
+const ringMaterial = new THREE.MeshBasicMaterial({
+    color: 0xff4d6d,
+    side: THREE.DoubleSide
+});
+const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+ring.rotation.x = Math.PI / 2;
+scene.add(ring);
+
+/* ANIMATION LOOP */
+function animate() {
+    requestAnimationFrame(animate);
+    moon.rotation.y += 0.002;
+    ring.rotation.z += 0.01;
+    renderer.render(scene, camera);
 }
+animate();
+
+/* RESPONSIVE */
+window.addEventListener("resize", () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+});
 </script>
 
 </body>
