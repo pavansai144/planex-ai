@@ -18,7 +18,7 @@
             overflow-x: hidden;
         }
 
-        /* STAR BACKGROUND */
+        /* ===== STAR BACKGROUND ===== */
         body::before {
             content: "";
             position: fixed;
@@ -35,7 +35,7 @@
             to { transform: translateY(-1000px); }
         }
 
-        /* NAVBAR */
+        /* ===== NAVBAR ===== */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -65,11 +65,10 @@
             color: #ff4d6d;
         }
 
-        /* HERO */
+        /* ===== HERO ===== */
         .hero {
             text-align: center;
             padding: 150px 20px;
-            animation: fadeIn 2s ease;
         }
 
         .hero h1 {
@@ -86,18 +85,13 @@
             margin-top: 20px;
         }
 
+        /* ===== SECTION ===== */
         .section {
             padding: 100px 60px;
             text-align: center;
-            animation: fadeIn 1.5s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* GLASS CARD */
+        /* ===== GLASS CARD ===== */
         .glass-card {
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(20px);
@@ -154,7 +148,7 @@
             color: #777;
         }
 
-        /* CHATBOT */
+        /* ===== CHATBOT ===== */
         #chat-icon {
             position: fixed;
             bottom: 30px;
@@ -189,11 +183,58 @@
             border: none;
         }
 
-        /* MOBILE RESPONSIVE */
-        @media(max-width: 768px) {
-            .navbar { padding: 20px; }
-            .hero h1 { font-size: 40px; }
+        /* ===== MOBILE RESPONSIVE ===== */
+
+        @media (max-width: 1024px) {
+            .section { padding: 80px 30px; }
+            .hero h1 { font-size: 50px; }
+        }
+
+        @media (max-width: 768px) {
+
+            .navbar {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+                gap: 15px;
+                margin-top: 15px;
+            }
+
+            .hero {
+                padding: 100px 20px;
+            }
+
+            .hero h1 { font-size: 38px; }
+            .hero p { font-size: 16px; }
+
             .section { padding: 60px 20px; }
+
+            .flex-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .glass-card {
+                width: 90%;
+            }
+
+            button { width: 90%; }
+
+            input[type="file"] { width: 90%; }
+
+            #chatbot {
+                width: 90%;
+                right: 5%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 28px; }
+            .hero p { font-size: 14px; }
+            footer { padding: 30px 15px; font-size: 12px; }
         }
 
     </style>
