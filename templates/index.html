@@ -2,72 +2,299 @@
 <html>
 <head>
     <title>Planex AI</title>
-    <style>
-        body { font-family: Arial; background-color: #0d0d1a; color: white; text-align: center; }
-        button { padding: 10px 20px; background: #1f4068; color: white; border: none; cursor: pointer; }
-        img { margin: 10px; border: 2px solid white; }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        /* Chatbot */
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top, #111122, #050510);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* STAR BACKGROUND */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 200%;
+            height: 200%;
+            background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
+            animation: stars 60s linear infinite;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        @keyframes stars {
+            from { transform: translateY(0); }
+            to { transform: translateY(-1000px); }
+        }
+
+        /* NAVBAR */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            backdrop-filter: blur(10px);
+            background: rgba(10,10,20,0.6);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #ff4d6d;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 150px 20px;
+            animation: fadeIn 2s ease;
+        }
+
+        .hero h1 {
+            font-size: 65px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ffffff, #ff4d6d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 22px;
+            color: #BBBBBB;
+            margin-top: 20px;
+        }
+
+        .section {
+            padding: 100px 60px;
+            text-align: center;
+            animation: fadeIn 1.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* GLASS CARD */
+        .glass-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 0 40px rgba(255, 77, 109, 0.15);
+            transition: 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 60px rgba(255, 77, 109, 0.35);
+        }
+
+        .flex-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 60px;
+        }
+
+        button {
+            padding: 14px 28px;
+            background: linear-gradient(45deg, #ff4d6d, #ff758f);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(255, 77, 109, 0.4);
+        }
+
+        button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.8);
+        }
+
+        input[type="file"] {
+            margin-top: 20px;
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        footer {
+            padding: 50px;
+            text-align: center;
+            background: #050510;
+            color: #777;
+        }
+
+        /* CHATBOT */
+        #chat-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(45deg, #ff4d6d, #ff758f);
+            color: white;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            font-size: 26px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 77, 109, 0.6);
+        }
+
         #chatbot {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
-            background: #1f4068;
-            border-radius: 10px;
+            bottom: 110px;
+            right: 30px;
+            width: 340px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px;
             display: none;
-            padding: 10px;
         }
 
         #chatbot input {
-            width: 80%;
-            padding: 5px;
+            width: 70%;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
         }
 
-        #chat-icon {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #e43f5a;
-            color: white;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 24px;
-            cursor: pointer;
+        /* MOBILE RESPONSIVE */
+        @media(max-width: 768px) {
+            .navbar { padding: 20px; }
+            .hero h1 { font-size: 40px; }
+            .section { padding: 60px 20px; }
         }
+
     </style>
 </head>
+
 <body>
 
-<h1>PLANEX AI</h1>
-<h3>AI-Assisted Analysis of Lunar Surface Features</h3>
+<nav class="navbar">
+    <div><strong>PLANEX AI</strong></div>
+    <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#upload">Analyze</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#future">Future</a></li>
+    </ul>
+</nav>
 
-<form method="POST" enctype="multipart/form-data">
-    <input type="file" name="image" required>
-    <br><br>
-    <button type="submit">Analyze Image</button>
-</form>
+<section class="hero">
+    <h1>PLANEX AI</h1>
+    <p>AI-Assisted Analysis of Lunar Surface Features</p>
+</section>
+
+<section id="features" class="section">
+    <h2>Key Features</h2>
+    <div class="flex-container">
+        <div class="glass-card">
+            <h3>Edge Detection</h3>
+            <p>Identifies surface boundaries using Canny algorithm.</p>
+        </div>
+        <div class="glass-card">
+            <h3>Crater Detection</h3>
+            <p>Detects crater-like structures using Hough Transform.</p>
+        </div>
+        <div class="glass-card">
+            <h3>AI Chatbot</h3>
+            <p>Interactive assistant explaining workflow and features.</p>
+        </div>
+    </div>
+</section>
+
+<section id="upload" class="section">
+    <h2>Analyze Lunar Image</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" required><br><br>
+        <button type="submit">Analyze Image</button>
+    </form>
+</section>
 
 {% if original_image %}
-    <h3>Original Image</h3>
-    <img src="{{ original_image }}" width="300">
+<section class="section">
+    <h2>Results</h2>
+    <div class="flex-container">
+        <div class="glass-card card">
+            <h4>Original</h4>
+            <img src="{{ original_image }}">
+        </div>
+        <div class="glass-card card">
+            <h4>Edge Detection</h4>
+            <img src="{{ edge_image }}">
+        </div>
+        <div class="glass-card card">
+            <h4>Crater Detection</h4>
+            <img src="{{ crater_image }}">
+        </div>
+    </div>
+</section>
 {% endif %}
 
-{% if edge_image %}
-    <h3>Edge Detection</h3>
-    <img src="{{ edge_image }}" width="300">
-{% endif %}
+<section id="about" class="section">
+    <h2>About Planex AI</h2>
+    <p style="max-width:700px;margin:auto;color:#BBBBBB;">
+        Planex AI is a cloud-deployed lunar surface analysis platform designed 
+        to automate crater detection using computer vision techniques. 
+        It demonstrates modular architecture and scalability toward deep learning integration.
+    </p>
+</section>
 
-{% if crater_image %}
-    <h3>Crater Detection</h3>
-    <img src="{{ crater_image }}" width="300">
-{% endif %}
+<section id="future" class="section">
+    <h2>Future Work</h2>
+    <div class="flex-container">
+        <div class="glass-card">
+            <h4>CNN-Based Detection</h4>
+            <p>Deep learning models for higher detection accuracy.</p>
+        </div>
+        <div class="glass-card">
+            <h4>Multi-Planet Support</h4>
+            <p>Expand detection to Mars and other celestial bodies.</p>
+        </div>
+        <div class="glass-card">
+            <h4>Real-Time Integration</h4>
+            <p>Integration with satellite datasets.</p>
+        </div>
+    </div>
+</section>
 
-<!-- Chat Icon -->
+<footer>
+    © 2026 Planex AI | Built by Pavan Sai A
+</footer>
+
 <button id="chat-icon" onclick="toggleChat()">💬</button>
 
-<!-- Chatbot Box -->
 <div id="chatbot">
     <div id="chat-messages" style="height:150px; overflow-y:auto;"></div>
     <input type="text" id="chat-input" placeholder="Ask something...">
