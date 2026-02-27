@@ -1,59 +1,60 @@
 import cv2
 import os
 import time
-import numpy as np
 
 def process_image(image_path):
-    # Read image
+
     img = cv2.imread(image_path)
-    if img is None:
-        raise ValueError("Unable to read image")
-
-    # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    # Reduce noise
-    blur = cv2.GaussianBlur(gray, (7, 7), 1.5)
-
-    # --------------------
-    # EDGE DETECTION
-    # --------------------
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
     edges = cv2.Canny(blur, 50, 150)
 
-    # --------------------
-    # CRATER DETECTION (HOUGH CIRCLE)
-    # --------------------
+    _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+
+    contours_img = img.copy()
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cv2.drawContours(contours_img, contours, -1, (0, 255, 0), 1)
+
+    crater_img = img.copy()
     circles = cv2.HoughCircles(
         blur,
         cv2.HOUGH_GRADIENT,
         dp=1.2,
-        minDist=40,
-        param1=100,
+        minDist=50,
+        param1=50,
         param2=30,
         minRadius=10,
         maxRadius=100
     )
 
-    crater_marked = img.copy()
+    crater_count = 0
+    confidence = 0
 
     if circles is not None:
-        circles = np.uint16(np.around(circles[0]))
+        circles = circles[0]
+        crater_count = len(circles)
+
         for (x, y, r) in circles:
-            cv2.circle(crater_marked, (x, y), r, (0, 255, 0), 2)
-            cv2.circle(crater_marked, (x, y), 2, (0, 0, 255), 3)
+            cv2.circle(crater_img, (int(x), int(y)), int(r), (0, 0, 255), 2)
 
-    # --------------------
-    # SAVE OUTPUTS
-    # --------------------
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.join(base_dir, "static", "outputs")
-    os.makedirs(output_dir, exist_ok=True)
+        confidence = min(95, 50 + crater_count * 5)
+    else:
+        confidence = 40
 
-    ts = int(time.time())
-    edge_path = os.path.join(output_dir, f"edges_{ts}.png")
-    crater_path = os.path.join(output_dir, f"craters_{ts}.png")
+    timestamp = str(int(time.time()))
+    outputs = {}
 
-    cv2.imwrite(edge_path, edges)
-    cv2.imwrite(crater_path, crater_marked)
+    def save(image, name):
+        filename = f"{name}_{timestamp}.png"
+        path = os.path.join("static/outputs", filename)
+        cv2.imwrite(path, image)
+        return path
 
-    return edge_path, crater_path
+    outputs["gray"] = save(gray, "gray")
+    outputs["blur"] = save(blur, "blur")
+    outputs["edges"] = save(edges, "edges")
+    outputs["thresh"] = save(thresh, "threshold")
+    outputs["contours"] = save(contours_img, "contours")
+    outputs["crater"] = save(crater_img, "crater")
+
+    return outputs, crater_count, confidence

@@ -1,170 +1,476 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PLANEX AI | Ultimate Mission Control</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLANEX AI | Lunar Surface Intelligence System</title>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+body{
+    margin:0;
+    background:#02040a;
+    color:#e6edf3;
+    font-family:'Poppins',sans-serif;
+    scroll-behavior:smooth;
+    overflow-x:hidden;
+}
+h1,h2,h3{font-family:'Orbitron',sans-serif;}
 
-    <style>
-        body {
-            margin: 0;
-            background: #02040a;
-            color: #e6edf3;
-            font-family: 'Poppins', sans-serif;
-            overflow-x: hidden;
-        }
+#starfield{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
 
-        h1,h2,h3 { font-family: 'Orbitron', sans-serif; }
+/* NAVBAR */
+.navbar{
+    position:fixed;
+    top:0;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 60px;
+    background:rgba(0,0,0,0.9);
+    z-index:1000;
+    flex-wrap:wrap;
+}
+.navbar a{
+    color:#9ca3af;
+    text-decoration:none;
+    margin-left:25px;
+}
+.navbar a:hover{color:#ff4d6d;}
 
-        /* STAR CANVAS */
-        #starfield {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: #02040a;
-        }
+.hero{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    padding:120px 40px 60px;
+    flex-wrap:wrap;
+}
+#moon-container{
+    width:340px;
+    height:340px;
+}
 
-        /* NAVBAR */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 60px;
-            background: rgba(5,10,20,0.85);
-            border-bottom: 1px solid #1f2937;
-        }
+/* TELEMETRY */
+.telemetry{
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    padding:15px;
+    font-size:14px;
+    flex-wrap:wrap;
+}
+.telemetry span{
+    color:#22c55e;
+    font-weight:bold;
+}
 
-        .navbar ul {
-            list-style: none;
-            display: flex;
-            gap: 25px;
-        }
+/* DISCLAIMER */
+.disclaimer{
+    margin-top:20px;
+    padding:15px;
+    background:rgba(255,165,0,0.1);
+    border:1px solid orange;
+    border-radius:8px;
+    color:orange;
+    max-width:600px;
+    margin-left:auto;
+    margin-right:auto;
+}
 
-        .navbar a {
-            text-decoration: none;
-            color: #9ca3af;
-            font-size: 14px;
-        }
+.section{
+    padding:80px 60px;
+    text-align:center;
+}
+.section p{
+    max-width:900px;
+    margin:auto;
+    color:#9ca3af;
+    line-height:1.7;
+}
 
-        .navbar a:hover { color: #f43f5e; }
+/* DASHBOARD */
+.dashboard{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    flex-wrap:wrap;
+    margin-top:40px;
+}
+.dashboard-card{
+    background:#0f172a;
+    border:1px solid #1f2937;
+    padding:25px;
+    border-radius:10px;
+    width:250px;
+}
+.dashboard-card h3{color:#22c55e;}
 
-        /* HERO */
-        .hero {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 70px 40px;
-            flex-wrap: wrap;
-        }
+/* RESULTS */
+.result-container{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    flex-wrap:wrap;
+    margin-top:30px;
+}
+.result-card{
+    background:rgba(15,23,42,0.95);
+    padding:20px;
+    border-radius:12px;
+    width:270px;
+    border:1px solid #1f2937;
+}
+.result-card img{
+    width:100%;
+    border-radius:8px;
+}
 
-        #moon-container { width: 320px; height: 320px; }
+.main-btn{
+    padding:12px 30px;
+    background:#ff004c;
+    border:none;
+    border-radius:6px;
+    color:white;
+    cursor:pointer;
+}
+.main-btn:hover{background:#ff3366;}
 
-        .hero-text h1 { font-size: 42px; }
-        .hero-text p { color: #9ca3af; }
+.download-btn{
+    background:#22c55e;
+    padding:8px 15px;
+    border:none;
+    border-radius:5px;
+    margin-top:10px;
+    cursor:pointer;
+    color:white;
+}
 
-        /* TELEMETRY */
-        .telemetry {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            padding: 20px;
-            font-size: 14px;
-        }
+/* CHATBOT */
+#chat-icon{
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#f43f5e;
+    border:none;
+    color:white;
+    font-size:22px;
+    cursor:pointer;
+}
+#chatbot{
+    position:fixed;
+    bottom:95px;
+    right:25px;
+    width:320px;
+    background:#0f172a;
+    border-radius:10px;
+    padding:15px;
+    display:none;
+}
+#chat-messages{
+    height:150px;
+    overflow-y:auto;
+    font-size:13px;
+}
+#chat-input{
+    width:70%;
+}
 
-        .telemetry span {
-            color: #22c55e;
-            font-weight: bold;
-        }
+/* GALLERY */
+.gallery img{
+    width:300px;
+    border-radius:10px;
+    margin:15px;
+    transition:0.3s;
+}
+.gallery img:hover{transform:scale(1.05);}
 
-        /* SECTION */
-        .section {
-            padding: 60px 40px;
-            text-align: center;
-        }
+footer{
+    background:#000;
+    padding:40px;
+    text-align:center;
+    color:#777;
+}
 
-        .flex {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-top: 30px;
-        }
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 992px){
+    .hero{
+        flex-direction:column;
+        text-align:center;
+    }
+    #moon-container{
+        width:260px;
+        height:260px;
+        margin-bottom:20px;
+    }
+}
 
-        .panel-card {
-            background: rgba(15,23,42,0.9);
-            padding: 25px;
-            border-radius: 10px;
-            border: 1px solid #1f2937;
-            width: 260px;
-        }
+@media (max-width: 768px){
+    .navbar{
+        padding:15px 20px;
+        justify-content:center;
+        text-align:center;
+    }
+    .navbar div{
+        width:100%;
+        margin-top:10px;
+    }
+    .navbar a{
+        margin:10px;
+        display:inline-block;
+    }
 
-        button {
-            padding: 10px 20px;
-            background: #f43f5e;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    .section{
+        padding:60px 20px;
+    }
 
-        .result-card img {
-            width: 220px;
-            border-radius: 8px;
-        }
+    .dashboard-card{
+        width:90%;
+    }
 
-        .gallery img {
-            width: 250px;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
+    .result-card{
+        width:90%;
+    }
 
-        .gallery img:hover { transform: scale(1.05); }
+    .gallery img{
+        width:90%;
+    }
 
-        footer {
-            padding: 40px;
-            text-align: center;
-            background: rgba(5,10,20,0.9);
-            color: #6b7280;
-        }
+    #chatbot{
+        width:90%;
+        right:5%;
+    }
+}
 
-        /* CHATBOT */
-        #chat-icon {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #f43f5e;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
+@media (max-width: 480px){
+    h1{
+        font-size:22px;
+    }
+    .telemetry{
+        font-size:12px;
+        gap:15px;
+    }
+}
+</style>
+</head>
 
-        #chatbot {
-            position: fixed;
-            bottom: 95px;
-            right: 25px;
-            width: 300px;
-            background: rgba(15,23,42,0.95);
-            border-radius: 10px;
-            padding: 15px;
-            display: none;
-        }
+<body>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLANEX AI | Lunar Surface Intelligence System</title>
 
-        @media(max-width:768px){
-            .hero { flex-direction: column; }
-        }
-    </style>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+body{
+    margin:0;
+    background:#02040a;
+    color:#e6edf3;
+    font-family:'Poppins',sans-serif;
+    scroll-behavior:smooth;
+    overflow-x:hidden;
+}
+h1,h2,h3{font-family:'Orbitron',sans-serif;}
+
+#starfield{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
+
+/* NAVBAR */
+.navbar{
+    position:fixed;
+    top:0;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 60px;
+    background:rgba(0,0,0,0.9);
+    z-index:1000;
+}
+.navbar a{
+    color:#9ca3af;
+    text-decoration:none;
+    margin-left:25px;
+}
+.navbar a:hover{color:#ff4d6d;}
+
+.hero{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    padding:120px 40px 60px;
+    flex-wrap:wrap;
+}
+#moon-container{
+    width:340px;
+    height:340px;
+}
+
+/* TELEMETRY */
+.telemetry{
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    padding:15px;
+    font-size:14px;
+}
+.telemetry span{
+    color:#22c55e;
+    font-weight:bold;
+}
+
+/* DISCLAIMER */
+.disclaimer{
+    margin-top:20px;
+    padding:15px;
+    background:rgba(255,165,0,0.1);
+    border:1px solid orange;
+    border-radius:8px;
+    color:orange;
+    max-width:600px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.section{
+    padding:80px 60px;
+    text-align:center;
+}
+.section p{
+    max-width:900px;
+    margin:auto;
+    color:#9ca3af;
+    line-height:1.7;
+}
+
+/* DASHBOARD */
+.dashboard{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    flex-wrap:wrap;
+    margin-top:40px;
+}
+.dashboard-card{
+    background:#0f172a;
+    border:1px solid #1f2937;
+    padding:25px;
+    border-radius:10px;
+    width:250px;
+}
+.dashboard-card h3{color:#22c55e;}
+
+/* RESULTS */
+.result-container{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    flex-wrap:wrap;
+    margin-top:30px;
+}
+.result-card{
+    background:rgba(15,23,42,0.95);
+    padding:20px;
+    border-radius:12px;
+    width:270px;
+    border:1px solid #1f2937;
+}
+.result-card img{
+    width:100%;
+    border-radius:8px;
+}
+
+.main-btn{
+    padding:12px 30px;
+    background:#ff004c;
+    border:none;
+    border-radius:6px;
+    color:white;
+    cursor:pointer;
+}
+.main-btn:hover{background:#ff3366;}
+
+.download-btn{
+    background:#22c55e;
+    padding:8px 15px;
+    border:none;
+    border-radius:5px;
+    margin-top:10px;
+    cursor:pointer;
+    color:white;
+}
+
+/* CHATBOT */
+#chat-icon{
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#f43f5e;
+    border:none;
+    color:white;
+    font-size:22px;
+    cursor:pointer;
+}
+#chatbot{
+    position:fixed;
+    bottom:95px;
+    right:25px;
+    width:320px;
+    background:#0f172a;
+    border-radius:10px;
+    padding:15px;
+    display:none;
+}
+#chat-messages{
+    height:150px;
+    overflow-y:auto;
+    font-size:13px;
+}
+#chat-input{
+    width:70%;
+}
+
+/* GALLERY */
+.gallery img{
+    width:300px;
+    border-radius:10px;
+    margin:15px;
+    transition:0.3s;
+}
+.gallery img:hover{transform:scale(1.05);}
+
+footer{
+    background:#000;
+    padding:40px;
+    text-align:center;
+    color:#777;
+}
+</style>
 </head>
 
 <body>
@@ -172,237 +478,210 @@
 <canvas id="starfield"></canvas>
 
 <nav class="navbar">
-    <div><strong>PLANEX AI</strong></div>
-    <ul>
-        <li><a href="#analyze">Analyze</a></li>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <li><a href="#about">About</a></li>
-    </ul>
+<div><strong>PLANEX AI</strong></div>
+<div>
+<a href="#about">About</a>
+<a href="#method">Methodology</a>
+<a href="#analysis">Analysis</a>
+<a href="#detection">Detection Engine</a>
+<a href="#mission">Mission Dashboard</a>
+<a href="#applications">Applications</a>
+<a href="#future">Future</a>
+<a href="#gallery">Gallery</a>
+</div>
 </nav>
 
 <section class="hero">
-    <div id="moon-container"></div>
-    <div class="hero-text">
-        <h1>ULTIMATE DEEP SPACE CONTROL</h1>
-        <p>AI-Driven Lunar Surface Analysis Platform</p>
-    </div>
+<div id="moon-container"></div>
+<div>
+<h1>PLANEX AI – Lunar Surface Intelligence</h1>
+<p>AI-powered crater detection system using advanced image processing and contour analysis.</p>
+</div>
 </section>
 
 <div class="telemetry">
-    ALTITUDE: <span id="altitude">0</span> km |
-    SPEED: <span id="speed">0</span> km/s |
-    SIGNAL: <span>STABLE</span>
+ALTITUDE: <span>540 km</span> |
+SPEED: <span>142 km/s</span> |
+SIGNAL: <span>STABLE</span>
 </div>
 
-<section id="analyze" class="section">
-    <h2>Lunar Image Analysis</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" required><br><br>
-        <button type="submit">Run Analysis</button>
-    </form>
+<!-- ABOUT -->
+<section id="about" class="section">
+<h2>About The System</h2>
+<p>
+Planex AI automates lunar crater detection using preprocessing,
+edge extraction, morphological refinement and circularity analysis.
+It assists planetary research and surface mapping operations.
+</p>
 </section>
 
-{% if original_image %}
+<!-- METHODOLOGY -->
+<section id="method" class="section">
+<h2>Detection Methodology</h2>
+<p>
+Image Acquisition → Grayscale → Gaussian Blur → Histogram Equalization →  
+Canny Edge Detection → Adaptive Threshold → Morphology → Contour Analysis
+</p>
+</section>
+
+<!-- DETECTION ENGINE -->
+<section id="detection" class="section">
+<h2>Detection & Analysis Engine</h2>
+<p>
+Structured computer vision pipeline detecting lunar impact craters 
+through edge detection, morphological filtering and circular contour validation.
+</p>
+</section>
+
+<!-- ANALYSIS -->
+<section id="analysis" class="section">
+<h2>Lunar Image Analysis</h2>
+<form method="POST" enctype="multipart/form-data">
+<input type="file" name="image" required><br><br>
+<button type="submit" class="main-btn">Run Detection Pipeline</button>
+</form>
+
+<div class="disclaimer">
+⚠ Only lunar surface images should be uploaded. Academic demonstration purpose only.
+</div>
+</section>
+
+{% if outputs %}
 <section class="section">
-    <h2>Analysis Output</h2>
-    <div class="flex">
-        <div class="panel-card result-card">
-            <h4>Original</h4>
-            <img src="{{ original_image }}">
-        </div>
-        <div class="panel-card result-card">
-            <h4>Edge Detection</h4>
-            <img src="{{ edge_image }}">
-        </div>
-        <div class="panel-card result-card">
-            <h4>Crater Detection</h4>
-            <img src="{{ crater_image }}">
-        </div>
-    </div>
+<h3 style="color:#ff4d6d;">Detected {{ crater_count }} Potential Craters</h3>
+<p>Detection Confidence: {{ confidence }}%</p>
+
+<div class="result-container">
+{% for key, value in outputs.items() %}
+<div class="result-card">
+<h4>{{ key|capitalize }}</h4>
+<img src="{{ value }}">
+<a href="{{ value }}" download>
+<button class="download-btn">Download</button>
+</a>
+</div>
+{% endfor %}
+</div>
 </section>
 {% endif %}
 
-<section id="features" class="section">
-    <h2>Core Capabilities</h2>
-    <div class="flex">
-        <div class="panel-card"><h3>Edge Detection</h3></div>
-        <div class="panel-card"><h3>Crater Recognition</h3></div>
-        <div class="panel-card"><h3>Cloud Hosted</h3></div>
-    </div>
+<!-- DASHBOARD -->
+<section id="mission" class="section">
+<h2>Mission Control Dashboard</h2>
+<div class="dashboard">
+<div class="dashboard-card"><h3>Mission Status</h3><p>ACTIVE ORBITAL SCAN</p></div>
+<div class="dashboard-card"><h3>Surface Mapping</h3><p>CRATER ANALYSIS MODE</p></div>
+<div class="dashboard-card"><h3>AI Core</h3><p>COMPUTER VISION ENGINE ONLINE</p></div>
+<div class="dashboard-card"><h3>Data Feed</h3><p>SIMULATED LUNAR DATA STREAM</p></div>
+</div>
+</section>
+
+<section id="applications" class="section">
+<h2>Applications</h2>
+<p>Surface mapping • Geological age estimation • Landing site analysis • Automated planetary survey systems</p>
+</section>
+
+<section id="future" class="section">
+<h2>Future Scope</h2>
+<p>CNN-based classification, Mars expansion, real-time satellite feeds, AI dashboards.</p>
 </section>
 
 <section id="gallery" class="section gallery">
-    <h2>Space Exploration Gallery</h2>
-    <div class="flex">
-        <img src="https://images-assets.nasa.gov/image/PIA12235/PIA12235~orig.jpg">
-        <img src="https://images-assets.nasa.gov/image/PIA01322/PIA01322~orig.jpg">
-        <img src="https://images-assets.nasa.gov/image/PIA00271/PIA00271~orig.jpg">
-    </div>
-</section>
-
-<section id="about" class="section">
-    <h2>About Planex AI</h2>
-    <p style="max-width:700px;margin:auto;color:#9ca3af;">
-        Planex AI is a mission-control inspired lunar surface analysis system designed to detect craters using computer vision.
-    </p>
+<h2>Space Exploration Gallery</h2>
+<img src="https://images-assets.nasa.gov/image/PIA12235/PIA12235~orig.jpg">
+<img src="https://images-assets.nasa.gov/image/PIA01322/PIA01322~orig.jpg">
+<img src="https://images-assets.nasa.gov/image/PIA00271/PIA00271~orig.jpg">
 </section>
 
 <footer>
-    © 2026 PLANEX AI | Built by Pavan Sai A
+© 2026 PLANEX AI | Developed by Pavan Sai A
 </footer>
 
-<button id="chat-icon" onclick="toggleChat()">💬</button>
+<button id="chat-icon" onclick="toggleChat()">🤖</button>
 <div id="chatbot">
-    <div id="chat-messages" style="height:120px; overflow-y:auto;"></div>
-    <input type="text" id="chat-input">
-    <button onclick="sendMessage()">Send</button>
+<div id="chat-messages"></div>
+<input type="text" id="chat-input">
+<button onclick="sendMessage()">Send</button>
 </div>
 
 <script>
-/* STARFIELD ULTIMATE */
+
+/* STARFIELD */
 const canvas = document.getElementById("starfield");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let stars = [];
-let shootingStars = [];
-
-for (let i = 0; i < 300; i++) {
-    stars.push({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height,
-        size: Math.random()*2,
-        speed: Math.random()*1.2,
-        opacity: Math.random(),
-        depth: Math.random()*3
-    });
+for(let i=0;i<400;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2,
+speed:Math.random()*0.5+0.2
+});
 }
-
-function createShootingStar(){
-    shootingStars.push({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height/2,
-        length: Math.random()*80+50,
-        speed: Math.random()*8+6,
-        life:0
-    });
-}
-setInterval(createShootingStar,4000);
 
 function animateStars(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    stars.forEach(star=>{
-        star.opacity+=(Math.random()-0.5)*0.05;
-        star.opacity=Math.max(0,Math.min(1,star.opacity));
-
-        ctx.beginPath();
-        ctx.arc(star.x,star.y,star.size*(star.depth/2),0,Math.PI*2);
-        ctx.fillStyle="rgba(255,255,255,"+star.opacity+")";
-        ctx.fill();
-
-        star.y+=star.speed*(star.depth/3);
-        if(star.y>canvas.height){
-            star.y=0;
-            star.x=Math.random()*canvas.width;
-        }
-    });
-
-    shootingStars.forEach((s,i)=>{
-        ctx.beginPath();
-        ctx.moveTo(s.x,s.y);
-        ctx.lineTo(s.x-s.length,s.y+s.length);
-        ctx.strokeStyle="white";
-        ctx.lineWidth=2;
-        ctx.stroke();
-        s.x+=s.speed;
-        s.y+=s.speed;
-        s.life++;
-        if(s.life>20) shootingStars.splice(i,1);
-    });
-
-    requestAnimationFrame(animateStars);
+ctx.clearRect(0,0,canvas.width,canvas.height);
+stars.forEach(s=>{
+s.y+=s.speed;
+if(s.y>canvas.height)s.y=0;
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
+ctx.fillStyle="white";
+ctx.fill();
+});
+requestAnimationFrame(animateStars);
 }
 animateStars();
 
-/* TELEMETRY */
-let alt=0,spd=0;
-setInterval(()=>{
-    alt+=Math.floor(Math.random()*5);
-    spd+=Math.floor(Math.random()*2);
-    document.getElementById("altitude").innerText=alt;
-    document.getElementById("speed").innerText=spd;
-},1000);
-
-/* 3D MOON + SATELLITE + RADAR */
+/* 3D MOON */
+const container=document.getElementById("moon-container");
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(75,1,0.1,1000);
+const camera=new THREE.PerspectiveCamera(60,1,0.1,1000);
 const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
-renderer.setSize(320,320);
-document.getElementById("moon-container").appendChild(renderer.domElement);
+renderer.setSize(340,340);
+container.appendChild(renderer.domElement);
 
 const textureLoader=new THREE.TextureLoader();
-const moonTexture=textureLoader.load("https://threejsfundamentals.org/threejs/resources/images/moon.jpg");
+const moonTexture=textureLoader.load("https://threejs.org/examples/textures/planets/moon_1024.jpg");
 
-const geometry=new THREE.SphereGeometry(2,64,64);
-const material=new THREE.MeshStandardMaterial({map:moonTexture});
-const moon=new THREE.Mesh(geometry,material);
+const moon=new THREE.Mesh(
+new THREE.SphereGeometry(2,64,64),
+new THREE.MeshStandardMaterial({map:moonTexture})
+);
 scene.add(moon);
 
-const light=new THREE.PointLight(0xffffff,1.5);
-light.position.set(5,5,5);
-scene.add(light);
-
-const satellite=new THREE.Mesh(
-    new THREE.BoxGeometry(0.3,0.2,0.2),
-    new THREE.MeshStandardMaterial({color:0xffffff})
-);
-scene.add(satellite);
-
-const radar=new THREE.Mesh(
-    new THREE.RingGeometry(2.3,2.5,64),
-    new THREE.MeshBasicMaterial({color:0x00ff99,transparent:true,opacity:0.4,side:THREE.DoubleSide})
-);
-radar.rotation.x=Math.PI/2;
-scene.add(radar);
-
+scene.add(new THREE.PointLight(0xffffff,2));
+scene.add(new THREE.AmbientLight(0x404040));
 camera.position.z=5;
-let orbitAngle=0;
 
 function animateMoon(){
-    requestAnimationFrame(animateMoon);
-    moon.rotation.y+=0.003;
-
-    orbitAngle+=0.02;
-    satellite.position.x=Math.cos(orbitAngle)*3;
-    satellite.position.z=Math.sin(orbitAngle)*3;
-
-    radar.rotation.z+=0.02;
-
-    renderer.render(scene,camera);
+requestAnimationFrame(animateMoon);
+moon.rotation.y+=0.004;
+renderer.render(scene,camera);
 }
 animateMoon();
 
-/* CHAT */
+/* CHATBOT */
 function toggleChat(){
-    let c=document.getElementById("chatbot");
-    c.style.display=c.style.display==="none"?"block":"none";
+let c=document.getElementById("chatbot");
+c.style.display=c.style.display==="block"?"none":"block";
 }
 function sendMessage(){
-    let input=document.getElementById("chat-input");
-    let message=input.value;
-    input.value="";
-    fetch("/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:message})})
-    .then(res=>res.json())
-    .then(data=>{
-        let box=document.getElementById("chat-messages");
-        box.innerHTML+="<p><b>You:</b> "+message+"</p>";
-        box.innerHTML+="<p><b>Bot:</b> "+data.reply+"</p>";
-    });
+let input=document.getElementById("chat-input");
+let message=input.value.toLowerCase();
+let box=document.getElementById("chat-messages");
+box.innerHTML+="<p><b>You:</b> "+message+"</p>";
+let response="I only provide information related to PLANEX AI.";
+box.innerHTML+="<p><b>Bot:</b> "+response+"</p>";
+input.value="";
 }
+
 </script>
 
+</body>
+</html>
 </body>
 </html>
