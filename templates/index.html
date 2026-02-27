@@ -16,6 +16,114 @@ body{
     font-family:'Poppins',sans-serif;
     scroll-behavior:smooth;
     overflow-x:hidden;
+    position:relative;
+}
+
+/* 🌌 ADDED GLOWING SKY EFFECT FROM FIRST CODE */
+body::before{
+    content:"";
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(0,255,255,0.15), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255,0,150,0.15), transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(0,100,255,0.12), transparent 50%);
+    z-index:-2;
+    animation: glowMove 12s infinite alternate ease-in-out;
+}
+@keyframes glowMove{
+    0%{transform:scale(1);}
+    100%{transform:scale(1.1);}
+}
+
+h1,h2,h3{font-family:'Orbitron',sans-serif;}
+
+#starfield{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
+
+/* (ALL YOUR SECOND CODE CSS REMAINS EXACTLY SAME BELOW) */
+
+/* ADD explanation style */
+.image-info{
+    margin-top:10px;
+    font-size:13px;
+    color:#22c55e;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="starfield"></canvas>
+
+<!-- ALL YOUR SECOND CODE HTML REMAINS EXACTLY SAME -->
+
+<!-- ONLY ADDING explanation block INSIDE your result loop -->
+
+{% if outputs %}
+<section class="section">
+<h3 style="color:#ff4d6d;">Detected {{ crater_count }} Potential Craters</h3>
+<p>Detection Confidence: {{ confidence }}%</p>
+
+<div class="result-container">
+{% for key, value in outputs.items() %}
+<div class="result-card">
+<h4>{{ key|capitalize }}</h4>
+<img src="{{ value }}">
+<a href="{{ value }}" download>
+<button class="download-btn">Download</button>
+</a>
+
+<!-- ✅ ADDED FROM FIRST CODE -->
+<p class="image-info">
+{% if key == "original" %}
+Original uploaded lunar surface image.
+{% elif key == "gray" %}
+Grayscale conversion for intensity analysis.
+{% elif key == "blur" %}
+Noise reduction using Gaussian blur.
+{% elif key == "edges" %}
+Canny edge detection highlighting crater rims.
+{% elif key == "crater" %}
+Final crater detection with circular overlays.
+{% else %}
+Processed output from detection pipeline.
+{% endif %}
+</p>
+
+</div>
+{% endfor %}
+</div>
+</section>
+{% endif %}
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLANEX AI | Lunar Surface Intelligence System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+body{
+    margin:0;
+    background:#02040a;
+    color:#e6edf3;
+    font-family:'Poppins',sans-serif;
+    scroll-behavior:smooth;
+    overflow-x:hidden;
 }
 h1,h2,h3{font-family:'Orbitron',sans-serif;}
 
@@ -683,5 +791,46 @@ input.value="";
 
 </body>
 </html>
+</body>
+</html>
+
+<script>
+
+/* STARFIELD (unchanged from second code) */
+
+/* 3D MOON (unchanged from second code) */
+
+/* ✅ IMPROVED CHATBOT FROM FIRST CODE */
+function toggleChat(){
+let c=document.getElementById("chatbot");
+c.style.display=c.style.display==="block"?"none":"block";
+}
+
+function sendMessage(){
+let input=document.getElementById("chat-input");
+let message=input.value.trim().toLowerCase();
+if(message==="") return;
+
+let box=document.getElementById("chat-messages");
+box.innerHTML+=`<p><b>You:</b> ${message}</p>`;
+
+let response="I provide information about PLANEX AI crater detection.";
+
+if(message.includes("crater"))
+response="Crater detection uses edge detection and contour analysis.";
+else if(message.includes("planex"))
+response="PLANEX AI is an AI-driven lunar surface analysis system.";
+else if(message.includes("mission"))
+response="Mission objective: automated lunar mapping and crater identification.";
+else if(message.includes("hi")||message.includes("hello"))
+response="Hello 👋 Ask me about lunar crater detection!";
+
+box.innerHTML+=`<p><b>Bot:</b> ${response}</p>`;
+box.scrollTop=box.scrollHeight;
+input.value="";
+}
+
+</script>
+
 </body>
 </html>
