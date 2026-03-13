@@ -106,9 +106,7 @@ Processed output from detection pipeline.
 </section>
 {% endif %}
 
-<!DOCTYPE html>
-<html>
-<head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PLANEX AI | Lunar Surface Intelligence System</title>
@@ -310,6 +308,17 @@ footer{
     padding:40px;
     text-align:center;
     color:#777;
+}
+.logo{
+color:white;
+text-decoration:none;
+font-family:'Orbitron',sans-serif;
+font-weight:700;
+font-size:18px;
+}
+
+.logo:hover{
+color:#ff4d6d;
 }
 
 /* ================= MOBILE RESPONSIVE ================= */
@@ -586,8 +595,9 @@ footer{
 <canvas id="starfield"></canvas>
 
 <nav class="navbar">
-<div><strong>PLANEX AI</strong></div>
 <div>
+<a href="#top" class="logo">PLANEX AI</a>
+</div>
 <a href="#about">About</a>
 <a href="#method">Methodology</a>
 <a href="#analysis">Analysis</a>
@@ -653,25 +663,6 @@ through edge detection, morphological filtering and circular contour validation.
 ⚠ Only lunar surface images should be uploaded. Academic demonstration purpose only.
 </div>
 </section>
-
-{% if outputs %}
-<section class="section">
-<h3 style="color:#ff4d6d;">Detected {{ crater_count }} Potential Craters</h3>
-<p>Detection Confidence: {{ confidence }}%</p>
-
-<div class="result-container">
-{% for key, value in outputs.items() %}
-<div class="result-card">
-<h4>{{ key|capitalize }}</h4>
-<img src="{{ value }}">
-<a href="{{ value }}" download>
-<button class="download-btn">Download</button>
-</a>
-</div>
-{% endfor %}
-</div>
-</section>
-{% endif %}
 
 <!-- DASHBOARD -->
 <section id="mission" class="section">
@@ -757,11 +748,30 @@ const moonTexture=textureLoader.load("https://threejs.org/examples/textures/plan
 
 const moon=new THREE.Mesh(
 new THREE.SphereGeometry(2,64,64),
-new THREE.MeshStandardMaterial({map:moonTexture})
+new THREE.MeshStandardMaterial({
+map:moonTexture,
+emissive:0x444444,
+emissiveIntensity:0.4
+})
 );
 scene.add(moon);
 
-scene.add(new THREE.PointLight(0xffffff,2));
+/* MOON GLOW */
+const glowGeometry=new THREE.SphereGeometry(2.4,64,64);
+const glowMaterial=new THREE.MeshBasicMaterial({
+color:0x88ccff,
+transparent:true,
+opacity:0.25
+});
+function animateMoon(){
+requestAnimationFrame(animateMoon);
+moon.rotation.y+=0.004;
+moonGlow.rotation.y+=0.004;
+renderer.render(scene,camera);
+}
+const moonGlow=new THREE.Mesh(glowGeometry,glowMaterial);
+scene.add(moonGlow);
+scene.add(new THREE.PointLight(0xffffff,3,50));
 scene.add(new THREE.AmbientLight(0x404040));
 camera.position.z=5;
 
@@ -778,15 +788,87 @@ let c=document.getElementById("chatbot");
 c.style.display=c.style.display==="block"?"none":"block";
 }
 function sendMessage(){
+
 let input=document.getElementById("chat-input");
-let message=input.value.toLowerCase();
+let message=input.value.trim().toLowerCase();
+if(message==="") return;
+
 let box=document.getElementById("chat-messages");
-box.innerHTML+="<p><b>You:</b> "+message+"</p>";
-let response="I only provide information related to PLANEX AI.";
-box.innerHTML+="<p><b>Bot:</b> "+response+"</p>";
-input.value="";
+
+box.innerHTML+=`<p><b>You:</b> ${message}</p>`;
+
+let response="I can help you with PLANEX AI, crater detection, lunar missions and image analysis.";
+
+/* GREETING */
+if(message.includes("hi") || message.includes("hello")){
+response="Hello astronaut 👋 How can I assist you with PLANEX AI today?";
 }
 
+/* ABOUT PLANEX */
+else if(message.includes("planex")){
+response="PLANEX AI is an AI-powered lunar surface intelligence system that detects craters using computer vision.";
+}
+
+/* CRATER */
+else if(message.includes("crater")){
+response="Craters are detected using edge detection, contour analysis and circularity validation in the PLANEX AI pipeline.";
+}
+
+/* HOW IT WORKS */
+else if(message.includes("how") || message.includes("method")){
+response="PLANEX AI works through a pipeline: Grayscale → Gaussian Blur → Histogram Equalization → Edge Detection → Contour Analysis.";
+}
+
+/* MISSION */
+else if(message.includes("mission")){
+response="The mission objective is automated lunar crater detection and planetary surface analysis.";
+}
+
+/* AI */
+else if(message.includes("ai")){
+response="The AI system uses computer vision techniques to identify circular crater structures in lunar images.";
+}
+
+/* IMAGE UPLOAD */
+else if(message.includes("upload") || message.includes("image")){
+response="You can upload a lunar surface image in the Analysis section and run the detection pipeline.";
+}
+
+/* MOON */
+else if(message.includes("moon")){
+response="The Moon contains thousands of impact craters formed by asteroid collisions over billions of years.";
+}
+
+/* FUTURE */
+else if(message.includes("future")){
+response="Future versions of PLANEX AI may include CNN deep learning models and Mars surface analysis.";
+}
+
+/* DASHBOARD */
+else if(message.includes("dashboard")){
+response="The Mission Control Dashboard displays the current status of the detection system and simulated lunar data feed.";
+}
+
+/* NASA */
+else if(message.includes("nasa")){
+response="NASA uses crater analysis to estimate planetary surface age and study geological history.";
+}
+
+/* THANKS */
+else if(message.includes("thanks") || message.includes("thank you")){
+response="You're welcome 🚀 Let me know if you want to explore more about lunar analysis.";
+}
+
+/* UNKNOWN QUESTION */
+else{
+response="I am not sure about that. Try asking about craters, PLANEX AI, lunar missions, or image analysis.";
+}
+
+box.innerHTML+=`<p><b>Bot:</b> ${response}</p>`;
+
+box.scrollTop=box.scrollHeight;
+input.value="";
+}
 </script>
 
 </body>
@@ -804,30 +886,6 @@ input.value="";
 function toggleChat(){
 let c=document.getElementById("chatbot");
 c.style.display=c.style.display==="block"?"none":"block";
-}
-
-function sendMessage(){
-let input=document.getElementById("chat-input");
-let message=input.value.trim().toLowerCase();
-if(message==="") return;
-
-let box=document.getElementById("chat-messages");
-box.innerHTML+=`<p><b>You:</b> ${message}</p>`;
-
-let response="I provide information about PLANEX AI crater detection.";
-
-if(message.includes("crater"))
-response="Crater detection uses edge detection and contour analysis.";
-else if(message.includes("planex"))
-response="PLANEX AI is an AI-driven lunar surface analysis system.";
-else if(message.includes("mission"))
-response="Mission objective: automated lunar mapping and crater identification.";
-else if(message.includes("hi")||message.includes("hello"))
-response="Hello 👋 Ask me about lunar crater detection!";
-
-box.innerHTML+=`<p><b>Bot:</b> ${response}</p>`;
-box.scrollTop=box.scrollHeight;
-input.value="";
 }
 
 </script>
