@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+
+uploads/
+outputs/
+static/outputs/
+
+*.png
+*.jpg
+*.jpeg
+*.mp4
+*.zip
+
+.env
