@@ -14,9 +14,7 @@ app = Flask(__name__)
 UPLOAD_FOLDER = os.path.join("static", "outputs")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# Ensure folder exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 
 # ===============================
 # CLEAR OLD OUTPUT FILES
@@ -76,6 +74,9 @@ def index():
 
         edges = cv2.Canny(blur, 50, 150)
 
+        # Heatmap Visualization
+        heatmap = cv2.applyColorMap(edges, cv2.COLORMAP_JET)
+
         _, threshold = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
 
         kernel = np.ones((3, 3), np.uint8)
@@ -129,6 +130,7 @@ def index():
         cv2.imwrite(os.path.join(UPLOAD_FOLDER, "blur.jpg"), blur)
         cv2.imwrite(os.path.join(UPLOAD_FOLDER, "equalized.jpg"), equalized)
         cv2.imwrite(os.path.join(UPLOAD_FOLDER, "edges.jpg"), edges)
+        cv2.imwrite(os.path.join(UPLOAD_FOLDER, "heatmap.jpg"), heatmap)
         cv2.imwrite(os.path.join(UPLOAD_FOLDER, "threshold.jpg"), threshold)
         cv2.imwrite(os.path.join(UPLOAD_FOLDER, "morphology.jpg"), morphology)
         cv2.imwrite(os.path.join(UPLOAD_FOLDER, "crater.jpg"), original)
@@ -139,6 +141,7 @@ def index():
             "blur": "static/outputs/blur.jpg",
             "equalized": "static/outputs/equalized.jpg",
             "edges": "static/outputs/edges.jpg",
+            "heatmap": "static/outputs/heatmap.jpg",
             "threshold": "static/outputs/threshold.jpg",
             "morphology": "static/outputs/morphology.jpg",
             "crater": "static/outputs/crater.jpg"

@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PLANEX AI | Lunar Surface Intelligence System</title>
 
+<div id="loading" style="display:none; color:#22c55e; margin-top:20px;">
+    🔍 AI Scanning Lunar Surface...
+</div>
+
+<div class="dashboard-card">
+<h3>Crater Statistics</h3>
+<p>Total Craters Detected: {{ crater_count }}</p>
+<p>Detection Confidence: {{ confidence }}%</p>
+</div>
+
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -654,7 +664,7 @@ through edge detection, morphological filtering and circular contour validation.
 <!-- ANALYSIS -->
 <section id="analysis" class="section">
 <h2>Lunar Image Analysis</h2>
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
 <input type="file" name="image" required><br><br>
 <button type="submit" class="main-btn">Run Detection Pipeline</button>
 </form>
@@ -743,19 +753,26 @@ const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
 renderer.setSize(340,340);
 container.appendChild(renderer.domElement);
 
+const light = new THREE.PointLight(0xffffff, 2);
+light.position.set(5,5,5);
+scene.add(light);
+
+scene.add(new THREE.AmbientLight(0x404040,0.8));
 const textureLoader=new THREE.TextureLoader();
+
 const moonTexture=textureLoader.load("https://threejs.org/examples/textures/planets/moon_1024.jpg");
+
 
 const moon=new THREE.Mesh(
 new THREE.SphereGeometry(2,64,64),
 new THREE.MeshStandardMaterial({
-map:moonTexture,
-emissive:0x444444,
-emissiveIntensity:0.4
+    map:moonTexture,
+    roughness:0.8,
+    metalness:0.1
 })
 );
-scene.add(moon);
 
+scene.add(moon);
 /* MOON GLOW */
 const glowGeometry=new THREE.SphereGeometry(2.4,64,64);
 const glowMaterial=new THREE.MeshBasicMaterial({
@@ -786,6 +803,9 @@ animateMoon();
 function toggleChat(){
 let c=document.getElementById("chatbot");
 c.style.display=c.style.display==="block"?"none":"block";
+}
+function showLoading(){
+    document.getElementById("loading").style.display="block";
 }
 function sendMessage(){
 
@@ -868,7 +888,25 @@ box.innerHTML+=`<p><b>Bot:</b> ${response}</p>`;
 
 box.scrollTop=box.scrollHeight;
 input.value="";
+if(message.includes("crater"))
+response="Craters are circular depressions formed by asteroid impacts on the Moon.";
+
+else if(message.includes("planex"))
+response="PLANEX AI analyzes lunar images using computer vision and crater detection algorithms.";
+
+else if(message.includes("upload"))
+response="Upload a lunar surface image and run the detection pipeline.";
+
+else if(message.includes("mission"))
+response="Mission objective: automated lunar surface mapping and crater identification.";
+
+else if(message.includes("moon"))
+response="The Moon contains thousands of craters formed by billions of years of asteroid impacts.";
+
+else
+response="Ask me about PLANEX AI, crater detection, or lunar missions.";
 }
+
 </script>
 
 </body>
